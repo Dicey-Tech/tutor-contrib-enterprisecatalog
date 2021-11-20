@@ -1,0 +1,10 @@
+enterprisecatalog:
+  environment:
+    DJANGO_SETTINGS_MODULE: enterprise_catalog.settings.tutor.development
+  command: python3 manage.py runserver 0.0.0.0:8160
+  ports:
+    - "8160:8160"
+  networks:
+    default:
+      aliases:
+        - "{{ ENTERPRISECATALOG_HOST }}"

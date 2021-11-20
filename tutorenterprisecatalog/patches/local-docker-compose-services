@@ -1,0 +1,8 @@
+enterprisecatalog:
+  image: {{ ENTERPRISECATALOG_DOCKER_IMAGE }}
+  environment:
+    DJANGO_SETTINGS_MODULE: enterprise_catalog.settings.tutor.production
+  volumes:
+    - ../plugins/enterprisecatalog/apps/settings/tutor:/openedx/enterprise-catalog/enterprise_catalog/settings/tutor:ro
+  restart: unless-stopped
+  depends_on: {{ [("mysql", RUN_MYSQL)]|list_if }}

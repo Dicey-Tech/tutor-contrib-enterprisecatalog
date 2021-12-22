@@ -31,7 +31,7 @@ RUN pip install django-redis==4.12.1
 # Install uwsgi
 RUN pip install uwsgi==2.0.19.1
 
-{{ patch("dt-enterprisecatalog-dockerfile-post-python-requirements") }}
+{{ patch("enterprisecatalog-dockerfile-post-python-requirements") }}
 
 RUN python manage.py collectstatic --noinput
 

@@ -15,7 +15,8 @@ config = {
     },
     "defaults": {
         "VERSION": __version__,
-        "DOCKER_IMAGE": "{{ DOCKER_REGISTRY }}diceytech/enterprise-catalog:{{ ENTERPRISECATALOG_VERSION }}",
+        "DOCKER_IMAGE": "{{ DOCKER_REGISTRY }}diceytech/openedx-enterprise-catalog:{{ ENTERPRISECATALOG_VERSION }}",
+        "WORKER_DOCKER_IMAGE": "{{ DOCKER_REGISTRY }}diceytech/openedx-enterprise-catalog-worker:{{ ENTERPRISECATALOG_VERSION }}",
         "HOST": "enterprisecatalog.{{ LMS_HOST }}",
         "MYSQL_DATABASE": "enterprisecatalog",
         "MYSQL_USERNAME": "enterprisecatalog",
@@ -28,7 +29,10 @@ config = {
 }
 
 hooks = {
-    "build-image": {"enterprisecatalog": "{{ ENTERPRISECATALOG_DOCKER_IMAGE }}"},
+    "build-image": {
+        "enterprisecatalog": "{{ ENTERPRISECATALOG_DOCKER_IMAGE }}",
+        "enterprisecatalog-worker": "{{ ENTERPRISECATALOG_WORKER_DOCKER_IMAGE }}",
+    },
     "init": ["mysql", "enterprisecatalog", "lms"],
 }
 

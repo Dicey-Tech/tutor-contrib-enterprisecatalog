@@ -15,7 +15,7 @@ Usage
 
     tutor plugins enable enterprisecatalog
 
-
+    Had to set user as staff and superuser using mysql
 License
 -------
 

@@ -1,3 +1,4 @@
+from enterprise_catalog.settings.utils import get_logger_config
 from ..production import *
 
 {% include "enterprisecatalog/apps/settings/partials/common.py" %}
@@ -17,6 +18,14 @@ SOCIAL_AUTH_REDIRECT_IS_HTTPS = {% if ENABLE_HTTPS %}True{% else %}False{% endif
 
 LMS_BASE_URL = "{{ 'https' if ENABLE_HTTPS else 'http' }}://{{ LMS_HOST }}"
 DISCOVERY_SERVICE_API_URL = "{{ 'https' if ENABLE_HTTPS else 'http' }}://{{ DISCOVERY_HOST }}/api/v1/"
-# ENTERPRISE_LEARNER_PORTAL_BASE_URL
 
-{{ patch("enterprisecatalog-production-settings") }}
+LOGGING = get_logger_config(
+    log_dir="/var/log",
+    edx_filename="enterprisecatalog_worker.log",
+    dev_env=True,
+    debug=False,
+)
+
+
+
+

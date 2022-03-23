@@ -1,3 +1,5 @@
+from enterprise_catalog.settings.utils import get_logger_config
+
 SECRET_KEY = "{{ ENTERPRISECATALOG_SECRET_KEY }}"
 ALLOWED_HOSTS = [
     "enterprisecatalog",
@@ -36,11 +38,18 @@ EMAIL_HOST_USER = "{{ SMTP_USERNAME }}"
 EMAIL_HOST_PASSWORD = "{{ SMTP_PASSWORD }}"
 EMAIL_USE_TLS = {{ SMTP_USE_TLS }}
 
-LOGGING["handlers"]["local"] = {
-    "class": "logging.handlers.WatchedFileHandler",
-    "filename": "/var/log/enterprisecatalog.log",
-    "formatter": "standard",
-}
+
+# Get rid of the "local" handler
+for logger in LOGGING["loggers"].values():
+    if "local" in logger["handlers"]:
+        logger["handlers"].remove("local")
+LOGGING = get_logger_config(
+    log_dir="/var/log",
+    edx_filename="enterprisecatalog.log",
+    dev_env=True,
+    debug=False,
+)
+# Decrease verbosity of algolia logger
 LOGGING["loggers"]["algoliasearch_django"] = {"level": "WARNING"}
 
 # Generic OAuth2 variables irrespective of SSO/backend service key types.
@@ -76,8 +85,6 @@ JWT_AUTH["JWT_ISSUERS"] = [
 EDX_DRF_EXTENSIONS = {
     'OAUTH2_USER_INFO_URL': '{% if ENABLE_HTTPS %}https{% else %}http{% endif %}://{{ LMS_HOST }}/oauth2/user_info',
 }
-
-# CELERY_BROKER_URL = "redis://{% if REDIS_USERNAME and REDIS_PASSWORD %}{{ REDIS_USERNAME }}:{{ REDIS_PASSWORD }}@{% endif %}{{ REDIS_HOST }}:{{ REDIS_PORT }}"
 
 CELERY_BROKER_TRANSPORT = "redis"
 CELERY_BROKER_HOSTNAME ="{{ REDIS_HOST }}:{{ REDIS_PORT }}"

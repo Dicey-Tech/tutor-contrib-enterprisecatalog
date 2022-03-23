@@ -28,6 +28,9 @@ RUN pip install pip==20.2.3 setuptools==50.3.0
 
 RUN pip3 install -r requirements/production.txt
 
+# Install django-redis for using redis as a django cache
+RUN pip install django-redis==4.12.1
+
 {{ patch("enterprisecatalog-worker-dockerfile-post-python-requirements") }}
 
 CMD celery worker --app=enterprise_catalog.celery:app --loglevel=info

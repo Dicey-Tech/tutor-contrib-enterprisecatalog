@@ -1,4 +1,4 @@
-FROM docker.io/ubuntu:20.04
+FROM docker.io/ubuntu:20.04 as base
 LABEL maintainer="Sofiane Bebert <s.bebert:diceytech.co.uk>"
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -7,10 +7,13 @@ RUN apt update && \
     build-essential libffi-dev libmysqlclient-dev libxml2-dev libxslt-dev libjpeg-dev libssl-dev
 ENV LC_ALL en_US.UTF-8
 
+ARG APP_USER_ID=1000
+RUN useradd --home-dir /openedx --create-home --shell /bin/bash --uid ${APP_USER_ID} app
+USER ${APP_USER_ID}
+
 ARG ENTERPRISE_CATALOG_REPOSITORY=https://github.com/edx/enterprise-catalog.git 
 ARG ENTERPRISE_CATALOG_VERSION={{ OPENEDX_COMMON_VERSION }}
 
-RUN mkdir /openedx
 RUN git clone $ENTERPRISE_CATALOG_REPOSITORY --branch $ENTERPRISE_CATALOG_VERSION --depth 1 /openedx/enterprise-catalog
 WORKDIR /openedx/enterprise-catalog
 
@@ -28,10 +31,19 @@ RUN pip3 install -r requirements/production.txt
 # Install django-redis for using redis as a django cache
 RUN pip install django-redis==4.12.1
 
+FROM base AS openedx-enterprise-catalog-worker
+
+{{ patch("enterprise-catalog-worker-dockerfile-post-python-requirements") }}
+
+ENV WORKER_CONFIGURATION_MODULE enterprise_catalog.settings.tutor.celeryconfig
+CMD celery worker --app=enterprise_catalog.celery:app --loglevel=info
+
+FROM base AS openedx-enterprise-catalog
+
 # Install uwsgi
 RUN pip install uwsgi==2.0.19.1
 
-{{ patch("enterprisecatalog-dockerfile-post-python-requirements") }}
+{{ patch("enterprise-catalog-dockerfile-post-python-requirements") }}
 
 RUN python manage.py collectstatic --noinput
 

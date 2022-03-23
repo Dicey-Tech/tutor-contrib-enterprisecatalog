@@ -12,7 +12,7 @@ enterprisecatalog:
 enterprisecatalog-worker:
   image: {{ ENTERPRISECATALOG_WORKER_DOCKER_IMAGE }}
   environment:
-    DJANGO_SETTINGS_MODULE: enterprise_catalog.settings.tutor.celeryconfig
+    DJANGO_SETTINGS_MODULE: enterprise_catalog.settings.tutor.celery_production
   restart: unless-stopped
   volumes:
     - ../plugins/enterprisecatalog/apps/settings/tutor:/openedx/enterprise-catalog/enterprise_catalog/settings/tutor:ro

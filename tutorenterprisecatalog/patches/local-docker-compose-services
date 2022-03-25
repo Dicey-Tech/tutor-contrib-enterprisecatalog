@@ -10,7 +10,10 @@ enterprisecatalog:
     {% if RUN_MYSQL %}- mysql{% endif %}
 
 enterprisecatalog-worker:
-  image: {{ ENTERPRISECATALOG_WORKER_DOCKER_IMAGE }}
+  image: openedx-enterprise-catalog-worker
+  build:
+    context: ../plugins/enterprisecatalog/build/enterprisecatalog
+    target: openedx-enterprise-catalog-worker
   environment:
     DJANGO_SETTINGS_MODULE: enterprise_catalog.settings.tutor.celery_production
   restart: unless-stopped

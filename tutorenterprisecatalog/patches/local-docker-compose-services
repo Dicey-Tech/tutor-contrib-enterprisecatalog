@@ -19,5 +19,5 @@ enterprisecatalog-worker:
   restart: unless-stopped
   volumes:
     - ../plugins/enterprisecatalog/apps/settings/tutor:/openedx/enterprise-catalog/enterprise_catalog/settings/tutor:ro
-  depends_on: 
-    {% if RUN_MYSQL %}- mysql{% endif %}
+  {% if RUN_MYSQL %}depends_on: 
+    - mysql{% endif %}
